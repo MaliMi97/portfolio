@@ -1,11 +1,10 @@
 import datetime
-import sys
 import pandas as pd
 from . import API
 
 class CoinGeckoAPI(API.API):
     base_api_path = "https://api.coingecko.com/api/v3/"
-    def __init__(self, time_out=sys.maxsize, sleep=5, good_result = [200]):
+    def __init__(self, time_out=60, sleep=5, good_result = [200]):
         super().__init__(time_out, sleep, good_result)
     
     def endpoint_price_market_cap_volume(self, date_time_from, date_time_to):

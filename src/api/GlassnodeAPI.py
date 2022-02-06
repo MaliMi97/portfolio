@@ -1,12 +1,10 @@
-import sys
-import json
 import datetime
 import pandas as pd
 from . import API
 
 class GlassnodeAPI(API.API):
     base_api_path = "https://api.glassnode.com/"
-    def __init__(self, key, time_out=sys.maxsize, sleep=5, good_result = [200]):
+    def __init__(self, key, time_out=60, sleep=5, good_result = [200]):
         super().__init__(time_out, sleep, good_result)
         self.key = key
 
