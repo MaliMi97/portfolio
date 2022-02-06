@@ -36,9 +36,8 @@ class GlassnodeAPI(API.API):
                 self.get_response(self.base_api_path+'v1/metrics/market/marketcap_realized_usd', {'a': coin, 'api_key': self.key}),\
                 ['time', 'realized cap'])
 
-    def get_market_cap_realized_cap(self, coin='btc'):
-        df_mc = self.get_market_cap()
-        return self.get_market_cap().merge(self.get_realized_cap(), on='time')
+    def get_price_realized_price(self, coin='btc'):
+        return self.get_closing_price().merge(self.get_realized_price(), on='time')
     
 
     
