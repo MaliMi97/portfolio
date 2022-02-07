@@ -7,10 +7,10 @@ class CoinGeckoAPI(API.API):
     def __init__(self, time_out=60, sleep=5, good_result = [200]):
         super().__init__(time_out, sleep, good_result)
     
-    def endpoint_price_market_cap_volume(self, date_time_from, date_time_to):
-        return f"{self.base_api_path}coins/bitcoin/market_chart/range?vs_currency=usd&from={self.unit_timestamp(date_time_from)}&to={self.unit_timestamp(date_time_to)}"
+    def endpoint_price_market_cap_volume(self, date_time_from, date_time_to, coin="bitcoin"):
+        return f"{self.base_api_path}coins/{coin}/market_chart/range?vs_currency=usd&from={self.unit_timestamp(date_time_from)}&to={self.unit_timestamp(date_time_to)}"
     
-    def get_closing_prices(self, _date_time_from, _date_time_to, period):
+    def get_closing_price(self, _date_time_from, _date_time_to, period, coin="bitcoin"):
         '''
         _date_time_to is exclusive
         '''
@@ -19,11 +19,11 @@ class CoinGeckoAPI(API.API):
         if period == 'day':
             date_time_from = datetime.datetime(year=_date_time_from.year, month=_date_time_from.month, day=_date_time_from.day)
             date_time_to = datetime.datetime(year=_date_time_to.year, month=_date_time_to.month, day=_date_time_to.day)
-            prices = [(i,j) for i,j in self.get_response(self.endpoint_price_market_cap_volume(date_time_from, date_time_to))['prices']]
+            prices = [(i,j) for i,j in self.get_response(self.endpoint_price_market_cap_volume(date_time_from, date_time_to, coin))['prices']]
         elif period == 'week':
             date_time_from = datetime.datetime(year=_date_time_from.year, month=_date_time_from.month, day=_date_time_from.day) + datetime.timedelta(days = 6 - datetime.date.weekday(_date_time_from))
             date_time_to = datetime.datetime(year=_date_time_to.year, month=_date_time_to.month, day=_date_time_to.day) + datetime.timedelta(days = 6 - datetime.date.weekday(_date_time_to))
-            prices = [(i,j) for i,j in self.get_response(self.endpoint_price_market_cap_volume(date_time_from, date_time_to))['prices'] if datetime.datetime.weekday(datetime.datetime.fromtimestamp(i/1000)) == 6]
+            prices = [(i,j) for i,j in self.get_response(self.endpoint_price_market_cap_volume(date_time_from, date_time_to, coin))['prices'] if datetime.datetime.weekday(datetime.datetime.fromtimestamp(i/1000)) == 6]
         else:
             raise Exception("The only viable periods are day and week")
         df = pd.DataFrame(columns=['time','price'])
@@ -33,5 +33,6 @@ class CoinGeckoAPI(API.API):
                 df.loc[len(df)-1] = [datetime.datetime.fromtimestamp(i/1000),j]
             else:
                 date_time_from = datetime.datetime.fromtimestamp(i/1000)
-                df.loc[len(df)] = [datetime.datetime.fromtimestamp(i/1000),j]
+                date_time = datetime.datetime.fromtimestamp(i/1000)
+                df.loc[len(df)] = [datetime.datetime(year=date_time.year, month=date_time.month, day=date_time.day),j]
         return df
