@@ -26,7 +26,7 @@ class CoinGeckoAPI(API.API):
             prices = [(i,j) for i,j in self.get_response(self.endpoint_price_market_cap_volume(date_time_from, date_time_to))['prices'] if datetime.datetime.weekday(datetime.datetime.fromtimestamp(i/1000)) == 6]
         else:
             raise Exception("The only viable periods are day and week")
-        df = pd.DataFrame(columns=['date','price'])
+        df = pd.DataFrame(columns=['time','price'])
         df.loc[len(df)] = prices[0]
         for i,j in prices:
             if datetime.datetime.fromtimestamp(i/1000).day == date_time_from.day and datetime.datetime.fromtimestamp(i/1000).month == date_time_from.month and datetime.datetime.fromtimestamp(i/1000).year == date_time_from.year:
