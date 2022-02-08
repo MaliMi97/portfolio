@@ -1,6 +1,11 @@
 import numpy as np
 import pandas as pd
 
+'''
+This python script contains a function impermanent_loss, which is used to, under certain assumptions, compute the impermanent loss of yield farming.
+in_lp and fiat_to_lp are auxiliary functions
+'''
+
 def in_lp(x, y, x2_price, y2_price):
     r = x2_price/y2_price
     x2 = np.sqrt(x*y/r)
@@ -12,7 +17,11 @@ def fiat_to_lp(fiat, price_x, price_y, x2_price, y2_price):
 
 def impermanent_loss(df, initial_fiat):
     '''
-    df has columns time, price_x, price_y
+    Computes the impermanent loss of yield farming without rehypothecation. The initial amount of tokens x, y is derived from initial_fiat and the prices
+    of tokens x, y in the first row of the dataset.
+    Data frame df must have the following columns: time, price_x, price_y
+    The function adds additional columns to the dataset and counts the changes of fiat, how much fiat we would have if we had gone all in to token x, y or if we had gone for 50/50 split.
+    It also counts how big of a percent of the initial investment we gained or lost.
     '''
     df = df.reindex(columns = df.columns.tolist() + ['fiat', 'x', 'y', 'all in x', 'all in y', '50/50', '% to x', '% to y', "% to 50/50"])
     df['fiat'].at[0] = initial_fiat

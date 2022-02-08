@@ -2,7 +2,15 @@ from cProfile import label
 import matplotlib.pyplot as plt
 import pandas as pd
 
+'''
+This python script contains functions, which are used in the creation of graphs.
+Basicaly, the code that would have been often repeated during graph creation has been put here.
+'''
+
 def with_price_in_background(time, price, width=5, height=5, _fontsize=40):
+    '''
+    Makes a figure with twin y axes called ax, ax_background and puts the data called price in ax_background. Returns the tuple (figure, ax, ax_background)
+    '''
     fig = plt.figure(facecolor='white')
     ax = fig.add_axes([0,0,width,height])
     ax_background = ax.twinx()
@@ -15,6 +23,9 @@ def with_price_in_background(time, price, width=5, height=5, _fontsize=40):
     return (fig, ax, ax_background)
 
 def impermanent_loss_vis(df, x, y, width=5, height=5, _fontsize=40):
+    '''
+    Takes the data frame from function impermanent_loss in functions.impermanent_loss module as an input and plots the impermanent loss.
+    '''
     fig = plt.figure(facecolor='white')
     ax = fig.add_axes([0,0,width,height])
     ax.set_ylabel('price', fontsize=_fontsize)

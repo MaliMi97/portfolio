@@ -1,5 +1,9 @@
 import numpy as np
 
+'''
+This python script contains various metrics, which can be used to create on-chain metrics.
+'''
+
 def L_1_norm_single_value(v, v_ref):
     return (v - v_ref)/v_ref
 
