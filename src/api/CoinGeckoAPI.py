@@ -38,7 +38,8 @@ class CoinGeckoAPI(API.API):
         df.loc[len(df)] = prices[0]
         for i,j in prices:
             if datetime.datetime.fromtimestamp(i/1000).day == date_time_from.day and datetime.datetime.fromtimestamp(i/1000).month == date_time_from.month and datetime.datetime.fromtimestamp(i/1000).year == date_time_from.year:
-                df.loc[len(df)-1] = [datetime.datetime.fromtimestamp(i/1000),j]
+                aux = datetime.datetime.fromtimestamp(i/1000)
+                df.loc[len(df)-1] = [datetime.datetime(aux.year, aux.month, aux.day),j]
             else:
                 date_time_from = datetime.datetime.fromtimestamp(i/1000)
                 date_time = datetime.datetime.fromtimestamp(i/1000)

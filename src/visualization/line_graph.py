@@ -32,6 +32,8 @@ def impermanent_loss_vis(df, x, y, width=5, height=5, _fontsize=40):
     ax.tick_params(axis='y', labelsize=_fontsize)
     ax.set_xlabel('time', fontsize=_fontsize)
     ax.tick_params(axis='x', labelsize=_fontsize)
+    aux = [0 for i in range(len(df['time']))]
+    ax.plot(df['time'], aux, color='black')
     ax.plot(df['time'], df['% to x'], label=f"% to {x}")
     ax.plot(df['time'], df['% to y'], label=f"% to {y}")
     ax.plot(df['time'], df['% to 50/50'], label=f"% to 50/50")
