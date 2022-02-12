@@ -29,10 +29,10 @@ def order_1_precision_2_central_difference(vs):
     return np.array([0.5*(vs[i+1] - vs[i-1]) for i in np.arange(1, len(vs)-1)])
 
 def moving_average(vs, step):
-    return np.array([np.sum(vs[i-step:i])/step for i in np.arange(step, len(vs))])
+    return np.array([np.sum(vs[i-step+1:i+1])/step for i in np.arange(step-1, len(vs))])
 
 def exponential_moving_average(vs, step):
     ema = [np.sum(vs[:step])/step]
-    for i in np.arange(step+1,len(vs)):
-        ema.append(2/(step+1)*(vs[i] - ema[i-step-1]) + ema[i-step-1])
+    for i in np.arange(step,len(vs)):
+        ema.append(2/(step+1)*(vs[i] - ema[i-step]) + ema[i-step])
     return np.array(ema)
