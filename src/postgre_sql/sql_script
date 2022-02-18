@@ -1,0 +1,194 @@
+DROP FUNCTION IF EXISTS social_media_of_specific_token (VARCHAR(10));
+DROP FUNCTION IF EXISTS teammate_history (VARCHAR(50));
+DROP FUNCTION IF EXISTS current_teammates_of_specific_token (VARCHAR(10));
+DROP VIEW IF EXISTS current_token_team;
+DROP VIEW IF EXISTS token_team;
+DROP FUNCTION IF EXISTS tokens_with_specific_investor (VARCHAR(50));
+DROP FUNCTION IF EXISTS investors_of_specific_token (VARCHAR(10));
+DROP VIEW IF EXISTS token_investors;
+DROP PROCEDURE IF EXISTS insert_characteristic_by_description (VARCHAR(10), VARCHAR(200));
+DROP FUNCTION IF EXISTS tokens_with_specific_characteristic (VARCHAR(200));
+DROP FUNCTION IF EXISTS characteristics_of_specific_token (VARCHAR(10));
+DROP VIEW IF EXISTS token_characteristics;
+DROP TABLE IF EXISTS team;
+DROP TABLE IF EXISTS teammate;
+DROP TABLE IF EXISTS characteristic;
+DROP TABLE IF EXISTS keyword;
+DROP TABLE IF EXISTS investment;
+DROP TABLE IF EXISTS investor;
+DROP TABLE IF EXISTS social_media;
+DROP TABLE IF EXISTS crypto_token;
+
+CREATE TABLE crypto_token (
+	abbreviation VARCHAR(10) PRIMARY KEY,
+	token_name VARCHAR(50) UNIQUE NOT NULL,
+	website VARCHAR(200) UNIQUE,
+	sector VARCHAR(20),
+	maximum_supply VARCHAR(25),
+	launch_date DATE
+);
+
+CREATE TABLE social_media (
+	abbreviation VARCHAR(10) REFERENCES crypto_token(abbreviation),
+	url VARCHAR(500) UNIQUE NOT NULL
+);
+
+CREATE TABLE investor (
+	investor_name VARCHAR(50) PRIMARY KEY,
+	type_of_investor VARCHAR(100)
+);
+
+CREATE TABLE investment (
+	abbreviation VARCHAR(10) REFERENCES crypto_token(abbreviation),
+	investor_name VARCHAR(50) REFERENCES investor(investor_name)
+);
+
+CREATE TABLE keyword (
+	keyword_id SERIAL PRIMARY KEY,
+	description VARCHAR(200) UNIQUE NOT NULL
+);
+
+CREATE TABLE characteristic (
+	abbreviation VARCHAR(10) REFERENCES crypto_token(abbreviation),
+	keyword_id INTEGER REFERENCES keyword(keyword_id),
+	PRIMARY KEY (abbreviation, keyword_id)
+);
+
+CREATE TABLE teammate (
+	teammate_name VARCHAR(50) PRIMARY KEY,
+	background VARCHAR(100)
+);
+
+CREATE TABLE team (
+	abbreviation VARCHAR(10) REFERENCES crypto_token(abbreviation),
+	teammate_name VARCHAR(50) REFERENCES teammate(teammate_name),
+	teammate_position VARCHAR(50),
+	start_on DATE,
+	end_on DATE
+);
+
+CREATE VIEW token_characteristics
+AS
+SELECT crypto_token.abbreviation, token_name, description 
+FROM crypto_token
+INNER JOIN characteristic
+ON crypto_token.abbreviation = characteristic.abbreviation
+INNER JOIN keyword
+ON characteristic.keyword_id = keyword.keyword_id;
+
+CREATE OR REPLACE FUNCTION characteristics_of_specific_token (_abbreviation VARCHAR(10))
+RETURNS TABLE(description VARCHAR(200))
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT token_characteristics.description 
+	FROM token_characteristics 
+	WHERE abbreviation = _abbreviation;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION tokens_with_specific_characteristic (_description VARCHAR(200))
+RETURNS TABLE(abbreviation VARCHAR(10), token_name VARCHAR(50))
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT token_characteristics.abbreviation, token_characteristics.token_name 
+	FROM token_characteristics 
+	WHERE description = _description;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE VIEW token_investors
+AS
+SELECT crypto_token.abbreviation, token_name 
+FROM crypto_token
+INNER JOIN investment
+ON crypto_token.abbreviation = investment.abbreviation
+INNER JOIN investor
+ON investment.investor_name = investor.investor_name;
+
+CREATE OR REPLACE FUNCTION investors_of_specific_token (_abbreviation VARCHAR(10))
+RETURNS TABLE(investor_name VARCHAR(50), type_of_investor VARCHAR(50))
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT token_investors.investor_name, token_investors.type_of_investor
+	FROM token_investors 
+	WHERE abbreviation = _abbreviation;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION tokens_with_specific_investor (_investor_name VARCHAR(50))
+RETURNS TABLE(abbreviation VARCHAR(10), token_name VARCHAR(50))
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT token_investors.abbreviation, token_investors.token_name 
+	FROM token_investors 
+	WHERE investor_name = _investor_name;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE VIEW token_team
+AS
+SELECT crypto_token.abbreviation, token_name, team.teammate_name, background, team.teammate_position, start_on, end_on 
+FROM crypto_token
+INNER JOIN team
+ON crypto_token.abbreviation = team.abbreviation
+INNER JOIN teammate
+ON team.teammate_name = teammate.teammate_name;
+
+CREATE VIEW current_token_team
+AS
+SELECT abbreviation, token_name, teammate_name, background, teammate_position, start_on
+FROM token_team 
+WHERE end_on = NULL;
+
+CREATE OR REPLACE FUNCTION current_teammates_of_specific_token (_abbreviation VARCHAR(10))
+RETURNS TABLE(teammate_name VARCHAR(50), background VARCHAR(100), teammate_position VARCHAR(50), start_on DATE)
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT current_token_team.teammate_name, current_token_team.background, current_token_team.teammate_position, current_token_team.start_on
+	FROM current_token_team 
+	WHERE abbreviation = _abbreviation;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION teammate_history (_teammate_name VARCHAR(50))
+RETURNS TABLE(abbreviation VARCHAR(10), token_name VARCHAR(50), start_on DATE, end_on DATE)
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT token_investors.abbreviation, token_investors.token_name, token_investors.start_on, token_investors.end_on
+	FROM token_team 
+	WHERE teammate_name = _teammate_name;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION social_media_of_specific_token (_abbreviation VARCHAR(10))
+RETURNS TABLE(url VARCHAR(500))
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT social_media.url
+	FROM social_media 
+	WHERE abbreviation = _abbreviation;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE PROCEDURE insert_characteristic_by_description (_abbreviation VARCHAR(10), _description VARCHAR(200))
+AS $$
+BEGIN
+	INSERT INTO characteristic (abbreviation, keyword_id)
+	VALUES (_abbreviation, (SELECT keyword_id FROM keyword WHERE description = _description));
+END
+$$
+LANGUAGE plpgsql;
