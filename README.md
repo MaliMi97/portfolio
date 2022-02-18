@@ -19,6 +19,15 @@ trial-and-error.ipynb - Notebook for trying out new stuff.
 
 
 I used PostgreSQL version 12 and Puthon version 3.9.7
-Packages for Python can be seen in requirements.txt
 In order to install the psycopg2, the postgre package libpq-dev must be installed.
+The jupyter-notebooks require ipykernel to be installed.
+
+The Python packages, which are required to be installed to run the code are:
+numpy==1.20.3
+requests==2.26.0
+python-dateutil==2.8.2
+pandas==1.3.4
+psycopg2==2.8.6
+matplotlib==3.4.3
+seaborn==0.11.2
 
