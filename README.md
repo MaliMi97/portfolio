@@ -1,4 +1,4 @@
-# on-chain-analytics
+# Portfolio
 
 This is a personal Python project and PostgreSQL, where I play with cryptocurrencies. There are the following packages and jupiter notebooks in the src directory.
 
