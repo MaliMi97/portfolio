@@ -5,7 +5,7 @@ This portfolio contains the following Python and PostgreSQL projects.
 **crypto**:  This is a personal Python project and PostgreSQL, where I play with cryptocurrencies. 
 **TASEP**: Python school project cointaining very basic models, which simulate how pedestrians walk in one dimension
 
-<font size="20">crypto</font>
+## crypto
 
 **the packages and notebooks:**
 
@@ -44,7 +44,7 @@ matplotlib==3.4.3
 seaborn==0.11.2
 
 
-<font size="5">**TASEP**</font>
+## TASEP
 
 **the python scripts and notebooks:**
 
