@@ -27,21 +27,13 @@ This portfolio contains the following Python and PostgreSQL projects.
 * libpq-dev
 * Python version 3.9.7
 * ipykernel
-* Python packages:
-
-numpy==1.20.3
-
-requests==2.26.0
-
-python-dateutil==2.8.2
-
-pandas==1.3.4
-
-psycopg2==2.8.6
-
-matplotlib==3.4.3
-
-seaborn==0.11.2
+* numpy==1.20.3
+* requests==2.26.0
+* python-dateutil==2.8.2
+* pandas==1.3.4
+* psycopg2==2.8.6
+* matplotlib==3.4.3
+* seaborn==0.11.2
 
 
 ## TASEP
