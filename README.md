@@ -7,7 +7,7 @@ This portfolio contains the following Python and PostgreSQL projects.
 
 ## crypto
 
-**the packages and notebooks:**
+**the packages:**
 
 * api - Contains classes for connecting to APIs.
 * functions - Contains various functions, which take dataframes of prices, volumes, market caps, etc. as arguments and compute something.
