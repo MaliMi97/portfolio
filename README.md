@@ -1,3 +1,11 @@
+# This portfolio is deprecated. The repository has been turned into three projects:
+
+* [https://github.com/MaliMi97/crypto-analysis](https://github.com/MaliMi97/crypto-analysis)
+* [https://github.com/MaliMi97/crypto-database](https://github.com/MaliMi97/crypto-database)
+* [https://github.com/MaliMi97/TASEP](https://github.com/MaliMi97/TASEP)
+
+
+
 # Portfolio
 
 This portfolio contains the following Python and PostgreSQL projects.
